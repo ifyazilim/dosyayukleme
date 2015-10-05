@@ -47,9 +47,8 @@ class DosyaYukleme implements \ArrayAccess, \IteratorAggregate, \Countable
             throw new \RuntimeException('Dosya yükleme işlemleri PHP.ini dosyasından pasif yapılmış');
 
         // dosya gerçekten var mı?
-        if (isset($_FILES[$adi]) === false) {
+        if (isset($_FILES[$adi]) === false)
             throw new \InvalidArgumentException("$adi ile tanımlanan bir dosya yüklenmemiş.");
-        }
 
         // dosya bilgilerini elde edeceğiz
 
