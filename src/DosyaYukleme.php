@@ -36,7 +36,11 @@ class DosyaYukleme implements \ArrayAccess, \IteratorAggregate, \Countable
      */
     protected $hatalar = [];
 
-    public function __construct($adi, AdapterInterface $adapter)
+    /**
+     * @param string $adi $_FILES['$adi'] kısmındaki bilgi
+     * @param AdapterInterface|null $adapter
+     */
+    public function __construct($adi, AdapterInterface $adapter = null)
     {
         // dosya yüklemelerine izin veriliyor mu?
         if (ini_get('file_uploads') == false)
@@ -101,6 +105,14 @@ class DosyaYukleme implements \ArrayAccess, \IteratorAggregate, \Countable
     }
 
     /**
+     * @param AdapterInterface $adapter
+     */
+    public function setAdapter(AdapterInterface $adapter)
+    {
+        $this->adapter = $adapter;
+    }
+
+    /**
      * Yüklenmek istenen dosyaların yüklenmesi konusunda bir sorun var mı?
      *
      * @return bool
@@ -139,6 +151,10 @@ class DosyaYukleme implements \ArrayAccess, \IteratorAggregate, \Countable
         // dosyaların yüklenmesi tamam mı?
         if ( ! $this->isYuklemeTamam())
             throw new \RuntimeException('Dosyaların yüklenmesi ile ilgili bir sorun var.');
+
+        // adaptör set edilmiş olmalı
+        if ( ! $this->adapter instanceof AdapterInterface)
+            throw new \RuntimeException('Yükleme yapmak için adaptör tanımlanmamış.');
 
         // dosyalar üzerinde dönelim
         foreach ($this->dosyaBilgileri as $dosyaBilgisi) {
