@@ -46,61 +46,61 @@ class DosyaYukleme implements \ArrayAccess, \IteratorAggregate, \Countable
         if (ini_get('file_uploads') == false)
             throw new \RuntimeException('Dosya yükleme işlemleri PHP.ini dosyasından pasif yapılmış');
 
-        // dosya gerçekten var mı?
-        if (isset($_FILES[$adi]) === false)
-            throw new \InvalidArgumentException("$adi ile tanımlanan bir dosya yüklenmemiş.");
+        // dosya gerçekten varsa işlem yapacağız
+        if (isset($_FILES[$adi])) {
 
-        // dosya bilgilerini elde edeceğiz
+            // dosya bilgilerini elde edeceğiz
 
-        // birden fazla dosya yüklenmek mi istenmiş?
-        if (is_array($_FILES[$adi]['tmp_name']) === true) {
+            // birden fazla dosya yüklenmek mi istenmiş?
+            if (is_array($_FILES[$adi]['tmp_name']) === true) {
 
-            // yüklenmek istenen dosyalar üzerinde dönelim
-            foreach ($_FILES[$adi]['tmp_name'] as $index => $tmpName) {
+                // yüklenmek istenen dosyalar üzerinde dönelim
+                foreach ($_FILES[$adi]['tmp_name'] as $index => $tmpName) {
 
-                // aktif dosyanın yüklenmesinde sorun var mı?
-                if ($_FILES[$adi]['error'][$index] !== UPLOAD_ERR_OK) {
+                    // aktif dosyanın yüklenmesinde sorun var mı?
+                    if ($_FILES[$adi]['error'][$index] !== UPLOAD_ERR_OK) {
 
-                    // hatalara yeni kayıt ekleyelim
+                        // hatalara yeni kayıt ekleyelim
+                        $this->hatalar[] = sprintf(
+                            '%s: %s',
+                            $_FILES[$adi]['name'][$index],
+                            static::$hataMesajlari[$_FILES[$adi]['error'][$index]]
+                        );
+
+                        // sonraki foreach ile devam edelim
+                        continue;
+                    }
+
+                    // dosya bilgisini saklayalım
+                    $this->dosyaBilgileri[] = new DosyaBilgisi(
+                        $_FILES[$adi]['tmp_name'][$index],
+                        $_FILES[$adi]['name'][$index]);
+                }
+
+            } else {
+
+                // tek bir dosya yüklenmek istenmiş
+
+                // yüklenen dosya ile ilgili bir problem var mı?
+                if ($_FILES[$adi]['error'] !== UPLOAD_ERR_OK) {
+
+                    // evet, o halde hatalara yeni kayıt ekleyelim
                     $this->hatalar[] = sprintf(
                         '%s: %s',
-                        $_FILES[$adi]['name'][$index],
-                        static::$hataMesajlari[$_FILES[$adi]['error'][$index]]
+                        $_FILES[$adi]['name'],
+                        static::$hataMesajlari[$_FILES[$adi]['error']]
                     );
-
-                    // sonraki foreach ile devam edelim
-                    continue;
                 }
 
                 // dosya bilgisini saklayalım
                 $this->dosyaBilgileri[] = new DosyaBilgisi(
-                    $_FILES[$adi]['tmp_name'][$index],
-                    $_FILES[$adi]['name'][$index]);
+                    $_FILES[$adi]['tmp_name'],
+                    $_FILES[$adi]['name']);
             }
 
-        } else {
-
-            // tek bir dosya yüklenmek istenmiş
-
-            // yüklenen dosya ile ilgili bir problem var mı?
-            if ($_FILES[$adi]['error'] !== UPLOAD_ERR_OK) {
-
-                // evet, o halde hatalara yeni kayıt ekleyelim
-                $this->hatalar[] = sprintf(
-                    '%s: %s',
-                    $_FILES[$adi]['name'],
-                    static::$hataMesajlari[$_FILES[$adi]['error']]
-                );
-            }
-
-            // dosya bilgisini saklayalım
-            $this->dosyaBilgileri[] = new DosyaBilgisi(
-                $_FILES[$adi]['tmp_name'],
-                $_FILES[$adi]['name']);
+            // adaptörü set edelim
+            $this->adapter = $adapter;
         }
-
-        // adaptörü set edelim
-        $this->adapter = $adapter;
     }
 
     /**
