@@ -145,7 +145,13 @@ class DosyaYukleme implements \ArrayAccess, \IteratorAggregate, \Countable
         return $this->hatalar;
     }
 
-    public function yukle()
+    /**
+     * İstenilen bir yere yükleme yapar.
+     *
+     * @param string $yol
+     * @return bool
+     */
+    public function yukle($yol)
     {
         // dosyaların yüklenmesi tamam mı?
         if ( ! $this->isYuklemeTamam())
@@ -159,10 +165,7 @@ class DosyaYukleme implements \ArrayAccess, \IteratorAggregate, \Countable
         foreach ($this->dosyaBilgileri as $dosyaBilgisi) {
 
             // dosyayı yükleyelim
-            $this->adapter->write(
-                $dosyaBilgisi->getPathname(),
-                file_get_contents($dosyaBilgisi->getPathname()),
-                new Config());
+            $this->adapter->write($yol, file_get_contents($dosyaBilgisi->getPathname()), new Config());
         }
 
         // başarılı bir dönüş yapalım
