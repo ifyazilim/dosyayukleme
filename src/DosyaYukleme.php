@@ -81,21 +81,25 @@ class DosyaYukleme implements \ArrayAccess, \IteratorAggregate, \Countable
 
                 // tek bir dosya yüklenmek istenmiş
 
-                // yüklenen dosya ile ilgili bir problem var mı?
-                if ($_FILES[$adi]['error'] !== UPLOAD_ERR_OK) {
+                // eğer dosya yüklenmeden boş geçilmediyse
+                if ($_FILES[$adi]['error'] !== UPLOAD_ERR_NO_FILE) {
 
-                    // evet, o halde hatalara yeni kayıt ekleyelim
-                    $this->hatalar[] = sprintf(
-                        '%s: %s',
-                        $_FILES[$adi]['name'],
-                        static::$hataMesajlari[$_FILES[$adi]['error']]
-                    );
+                    // yüklenen dosya ile ilgili bir problem var mı?
+                    if ($_FILES[$adi]['error'] !== UPLOAD_ERR_OK) {
+
+                        // evet, o halde hatalara yeni kayıt ekleyelim
+                        $this->hatalar[] = sprintf(
+                            '%s: %s',
+                            $_FILES[$adi]['name'],
+                            static::$hataMesajlari[$_FILES[$adi]['error']]
+                        );
+                    }
+
+                    // dosya bilgisini saklayalım
+                    $this->dosyaBilgileri[] = new DosyaBilgisi(
+                        $_FILES[$adi]['tmp_name'],
+                        $_FILES[$adi]['name']);
                 }
-
-                // dosya bilgisini saklayalım
-                $this->dosyaBilgileri[] = new DosyaBilgisi(
-                    $_FILES[$adi]['tmp_name'],
-                    $_FILES[$adi]['name']);
             }
 
             // adaptörü set edelim
