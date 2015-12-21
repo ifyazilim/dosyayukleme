@@ -57,24 +57,28 @@ class DosyaYukleme implements \ArrayAccess, \IteratorAggregate, \Countable
                 // yüklenmek istenen dosyalar üzerinde dönelim
                 foreach ($_FILES[$adi]['tmp_name'] as $index => $tmpName) {
 
-                    // aktif dosyanın yüklenmesinde sorun var mı?
-                    if ($_FILES[$adi]['error'][$index] !== UPLOAD_ERR_OK) {
+                    // eğer dosya yüklenmeden boş geçilmediyse
+                    if ($_FILES[$adi]['error'][$index] !== UPLOAD_ERR_NO_FILE) {
 
-                        // hatalara yeni kayıt ekleyelim
-                        $this->hatalar[] = sprintf(
-                            '%s: %s',
-                            $_FILES[$adi]['name'][$index],
-                            static::$hataMesajlari[$_FILES[$adi]['error'][$index]]
-                        );
+                        // aktif dosyanın yüklenmesinde sorun var mı?
+                        if ($_FILES[$adi]['error'][$index] !== UPLOAD_ERR_OK) {
 
-                        // sonraki foreach ile devam edelim
-                        continue;
+                            // hatalara yeni kayıt ekleyelim
+                            $this->hatalar[] = sprintf(
+                                '%s: %s',
+                                $_FILES[$adi]['name'][$index],
+                                static::$hataMesajlari[$_FILES[$adi]['error'][$index]]
+                            );
+
+                            // sonraki foreach ile devam edelim
+                            continue;
+                        }
+
+                        // dosya bilgisini saklayalım
+                        $this->dosyaBilgileri[] = new DosyaBilgisi(
+                            $_FILES[$adi]['tmp_name'][$index],
+                            $_FILES[$adi]['name'][$index]);
                     }
-
-                    // dosya bilgisini saklayalım
-                    $this->dosyaBilgileri[] = new DosyaBilgisi(
-                        $_FILES[$adi]['tmp_name'][$index],
-                        $_FILES[$adi]['name'][$index]);
                 }
 
             } else {
