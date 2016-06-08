@@ -5,6 +5,8 @@ use Pekkis\MimeTypes\MimeTypes;
 class DosyaBilgisi extends \SplFileInfo
 {
     /**
+     * @deprecated
+     *
      * Uzantısız dosya adı
      * @var string
      */
@@ -56,13 +58,25 @@ class DosyaBilgisi extends \SplFileInfo
     }
 
     /**
+     * @deprecated use getBasename
+     *
      * Uzantı olmadan dosyanın adını verir.
      *
      * @return string
      */
     public function getAdi()
     {
-        return $this->getBasename('.' . $this->extension);
+        return $this->getBasename();
+    }
+
+    /**
+     * Uzantı olmadan dosyanın adını verir.
+     *
+     * @return string
+     */
+    public function getBasename()
+    {
+        return parent::getBasename('.' . $this->getExtension());
     }
 
     /**
@@ -85,7 +99,7 @@ class DosyaBilgisi extends \SplFileInfo
      */
     public function getUzanti()
     {
-        return $this->extension;
+        return $this->getExtension();
     }
 
     /**
@@ -128,16 +142,7 @@ class DosyaBilgisi extends \SplFileInfo
      */
     public function getTip()
     {
-        if (empty($this->tip)) {
-
-            $finfo = new \finfo(FILEINFO_MIME);
-            $mimetype = $finfo->file($this->getPathname());
-            $mimetypeParts = preg_split('/\s*[;,]\s*/', $mimetype);
-            $this->tip = strtolower($mimetypeParts[0]);
-            unset($finfo);
-        }
-
-        return $this->tip;
+        return $this->getMimeType();
     }
 
     /**
