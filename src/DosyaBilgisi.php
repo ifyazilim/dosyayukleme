@@ -1,5 +1,7 @@
 <?php namespace IfYazilim\DosyaYukleme;
 
+use Pekkis\MimeTypes\MimeTypes;
+
 class DosyaBilgisi extends \SplFileInfo
 {
     /**
@@ -9,10 +11,18 @@ class DosyaBilgisi extends \SplFileInfo
     protected $adi;
 
     /**
-     * Dosya uzantısı, ör: gif
+     * @deprecated use extension
+     *
      * @var string
      */
     protected $uzanti;
+
+    /**
+     * Dosya uzantısı, ör: gif
+     *
+     * @var string
+     */
+    protected $extension;
 
     /**
      * Dosya tipi
@@ -21,28 +31,43 @@ class DosyaBilgisi extends \SplFileInfo
     protected $tip;
 
     /**
-     * @param string $dosyaYolu dosyanın kaydedileceği yol
-     * @param string $yeniDosyaAdi dosyanın kaydedileceği tercih edilen bir isim
+     * Dosya mime type bilgisi.
+     *
+     * @var string
      */
-    public function __construct($dosyaYolu, $yeniDosyaAdi = null)
+    protected $mimeType;
+
+    /**
+     * @param string $file dosyanın kaydedileceği yol
+     */
+    public function __construct($file)
     {
-        $tercihEdilenDosyaAdi = is_null($yeniDosyaAdi) ? $dosyaYolu : $yeniDosyaAdi;
+        $mt = new MimeTypes();
 
-        $this->setAdi(pathinfo($tercihEdilenDosyaAdi, PATHINFO_FILENAME));
-        $this->setUzanti(pathinfo($tercihEdilenDosyaAdi, PATHINFO_EXTENSION));
+        // bilgileri set edelim
+        $mimeType = $mt->resolveMimeType($file);
+        $extension = $mt->mimeTypeToExtension($mimeType);
 
-        parent::__construct($dosyaYolu);
+        $this->mimeType = $mimeType;
+        $this->extension = $extension;
+        $this->uzanti = $extension;
+
+        parent::__construct($file);
     }
 
     /**
+     * Uzantı olmadan dosyanın adını verir.
+     *
      * @return string
      */
     public function getAdi()
     {
-        return $this->adi;
+        return $this->getBasename('.' . $this->extension);
     }
 
     /**
+     * @deprecated
+     *
      * @param string $adi
      * @return $this
      */
@@ -54,35 +79,51 @@ class DosyaBilgisi extends \SplFileInfo
     }
 
     /**
+     * @deprecated use getExtension
+     *
      * @return string
      */
     public function getUzanti()
     {
-        return $this->uzanti;
+        return $this->extension;
     }
 
     /**
-     * @param $uzanti
+     * @return string
+     */
+    public function getExtension()
+    {
+        return $this->extension;
+    }
+
+    /**
+     * @deprecated
+     *
+     * @param $extension
      * @return $this
      */
-    public function setUzanti($uzanti)
+    public function setUzanti($extension)
     {
-        $this->uzanti = strtolower($uzanti);
+        $this->extension = strtolower($extension);
 
         return $this;
     }
 
     /**
+     * @deprecated use getFilename
+     *
      * Dosyanın adını uzantısı ile birlikte verir.
      *
      * @return string
      */
     public function getTamAdi()
     {
-        return empty($this->uzanti) ? $this->adi : sprintf('%s.%s', $this->adi, $this->uzanti);
+        return empty($this->extension) ? $this->adi : sprintf('%s.%s', $this->adi, $this->extension);
     }
 
     /**
+     * @deprecated use getMimeType
+     *
      * @return string
      */
     public function getTip()
@@ -99,8 +140,29 @@ class DosyaBilgisi extends \SplFileInfo
         return $this->tip;
     }
 
+    /**
+     * @deprecated use isFileUploded
+     *
+     * @return bool
+     */
     public function isDosyaYuklendi()
     {
+        return $this->isFileUploded();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFileUploded()
+    {
         return is_uploaded_file($this->getPathname());
+    }
+
+    /**
+     * @return string
+     */
+    public function getMimeType()
+    {
+        return $this->mimeType;
     }
 }
