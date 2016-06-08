@@ -130,12 +130,12 @@ class DosyaYukleme implements \ArrayAccess, \IteratorAggregate, \Countable
         foreach ($this->dosyaBilgileri as $dosyaBilgisi) {
 
             // dosya yüklenmiş mi?
-            if ( ! $dosyaBilgisi->isDosyaYuklendi()) {
+            if ( ! $dosyaBilgisi->isFileUploded()) {
 
                 // hatalara yeni bir kayıt ekleyelim
                 $this->hatalar[] = sprintf(
                     '%s: %s',
-                    $dosyaBilgisi->getTamAdi(),
+                    $dosyaBilgisi->getFilename(),
                     'Dosya yüklenmemiş.'
                 );
             }
