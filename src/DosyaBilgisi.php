@@ -72,11 +72,12 @@ class DosyaBilgisi extends \SplFileInfo
     /**
      * Uzantı olmadan dosyanın adını verir.
      *
+     * @param null $suffix
      * @return string
      */
-    public function getBasename()
+    public function getBasename($suffix = null)
     {
-        return parent::getBasename('.' . $this->getExtension());
+        return parent::getBasename(is_null($suffix) ? ('.' . $this->getExtension()) : $suffix);
     }
 
     /**
