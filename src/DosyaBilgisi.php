@@ -13,6 +13,13 @@ class DosyaBilgisi extends \SplFileInfo
     protected $adi;
 
     /**
+     * Dosyanın tam adı
+     *
+     * @var string
+     */
+    protected $name;
+
+    /**
      * @deprecated use extension
      *
      * @var string
@@ -41,8 +48,9 @@ class DosyaBilgisi extends \SplFileInfo
 
     /**
      * @param string $file dosyanın kaydedileceği yol
+     * @param string $name dosyanın adı
      */
-    public function __construct($file)
+    public function __construct($file, $name = null)
     {
         $mt = new MimeTypes();
 
@@ -55,6 +63,8 @@ class DosyaBilgisi extends \SplFileInfo
         $this->uzanti = $extension;
 
         parent::__construct($file);
+
+        $this->name = is_null($name) ? $this->getFilename() : $name;
     }
 
     /**
@@ -170,5 +180,13 @@ class DosyaBilgisi extends \SplFileInfo
     public function getMimeType()
     {
         return $this->mimeType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 }

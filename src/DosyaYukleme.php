@@ -37,37 +37,37 @@ class DosyaYukleme implements \ArrayAccess, \IteratorAggregate, \Countable
     protected $hatalar = [];
 
     /**
-     * @param string $adi $_FILES['$adi'] kısmındaki bilgi
+     * @param string $name $_FILES['$name'] kısmındaki bilgi
      * @param AdapterInterface|null $adapter
      */
-    public function __construct($adi, AdapterInterface $adapter = null)
+    public function __construct($name, AdapterInterface $adapter = null)
     {
         // dosya yüklemelerine izin veriliyor mu?
         if (ini_get('file_uploads') == false)
             throw new \RuntimeException('Dosya yükleme işlemleri PHP.ini dosyasından pasif yapılmış');
 
         // dosya gerçekten varsa işlem yapacağız
-        if (isset($_FILES[$adi])) {
+        if (isset($_FILES[$name])) {
 
             // dosya bilgilerini elde edeceğiz
 
             // birden fazla dosya yüklenmek mi istenmiş?
-            if (is_array($_FILES[$adi]['tmp_name']) === true) {
+            if (is_array($_FILES[$name]['tmp_name']) === true) {
 
                 // yüklenmek istenen dosyalar üzerinde dönelim
-                foreach ($_FILES[$adi]['tmp_name'] as $index => $tmpName) {
+                foreach ($_FILES[$name]['tmp_name'] as $index => $tmpName) {
 
                     // eğer dosya yüklenmeden boş geçilmediyse
-                    if ($_FILES[$adi]['error'][$index] !== UPLOAD_ERR_NO_FILE) {
+                    if ($_FILES[$name]['error'][$index] !== UPLOAD_ERR_NO_FILE) {
 
                         // aktif dosyanın yüklenmesinde sorun var mı?
-                        if ($_FILES[$adi]['error'][$index] !== UPLOAD_ERR_OK) {
+                        if ($_FILES[$name]['error'][$index] !== UPLOAD_ERR_OK) {
 
                             // hatalara yeni kayıt ekleyelim
                             $this->hatalar[] = sprintf(
                                 '%s: %s',
-                                $_FILES[$adi]['name'][$index],
-                                static::$hataMesajlari[$_FILES[$adi]['error'][$index]]
+                                $_FILES[$name]['name'][$index],
+                                static::$hataMesajlari[$_FILES[$name]['error'][$index]]
                             );
 
                             // sonraki foreach ile devam edelim
@@ -76,8 +76,8 @@ class DosyaYukleme implements \ArrayAccess, \IteratorAggregate, \Countable
 
                         // dosya bilgisini saklayalım
                         $this->dosyaBilgileri[] = new DosyaBilgisi(
-                            $_FILES[$adi]['tmp_name'][$index],
-                            $_FILES[$adi]['name'][$index]);
+                            $_FILES[$name]['tmp_name'][$index],
+                            $_FILES[$name]['name'][$index]);
                     }
                 }
 
@@ -86,23 +86,23 @@ class DosyaYukleme implements \ArrayAccess, \IteratorAggregate, \Countable
                 // tek bir dosya yüklenmek istenmiş
 
                 // eğer dosya yüklenmeden boş geçilmediyse
-                if ($_FILES[$adi]['error'] !== UPLOAD_ERR_NO_FILE) {
+                if ($_FILES[$name]['error'] !== UPLOAD_ERR_NO_FILE) {
 
                     // yüklenen dosya ile ilgili bir problem var mı?
-                    if ($_FILES[$adi]['error'] !== UPLOAD_ERR_OK) {
+                    if ($_FILES[$name]['error'] !== UPLOAD_ERR_OK) {
 
                         // evet, o halde hatalara yeni kayıt ekleyelim
                         $this->hatalar[] = sprintf(
                             '%s: %s',
-                            $_FILES[$adi]['name'],
-                            static::$hataMesajlari[$_FILES[$adi]['error']]
+                            $_FILES[$name]['name'],
+                            static::$hataMesajlari[$_FILES[$name]['error']]
                         );
                     }
 
                     // dosya bilgisini saklayalım
                     $this->dosyaBilgileri[] = new DosyaBilgisi(
-                        $_FILES[$adi]['tmp_name'],
-                        $_FILES[$adi]['name']);
+                        $_FILES[$name]['tmp_name'],
+                        $_FILES[$name]['name']);
                 }
             }
 
