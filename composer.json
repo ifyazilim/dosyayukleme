@@ -1,27 +1,33 @@
 {
-    "name": "ifyazilim/dosyayukleme",
-    "type": "library",
-    "description": "PHP ile dosya yükleme işlerinde kullanılan kütüphanedir.",
-    "keywords": ["dosya yükleme", "upload", "file upload"],
-    "homepage": "http://github.com/ifyazilim/dosyayukleme",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "İrfan Evrens",
-            "email": "irfanevrens@gmail.com",
-            "homepage": "https://github.com/irfanevrens"
-        }
-    ],
-    "require": {
-        "league/flysystem": "1.0.*",
-        "php": ">=5.4.0",
-        "ext-fileinfo": "*",
-        "pekkis/mime-types": "^1.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "3.7.*"
-    },
-    "autoload": {
-        "psr-4": { "IfYazilim\\DosyaYukleme\\": "src" }
+  "name": "ifyazilim/dosyayukleme",
+  "type": "library",
+  "description": "PHP ile dosya yükleme işlerinde kullanılan kütüphanedir.",
+  "keywords": [
+    "dosya yükleme",
+    "upload",
+    "file upload"
+  ],
+  "homepage": "http://github.com/ifyazilim/dosyayukleme",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "İrfan Evrens",
+      "email": "irfanevrens@gmail.com",
+      "homepage": "https://github.com/irfanevrens"
     }
+  ],
+  "require": {
+    "league/flysystem": "1.0.*",
+    "php": ">=5.4.0",
+    "ext-fileinfo": "*",
+    "pekkis/mime-types": "^1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "3.7.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "IfYazilim\\DosyaYukleme\\": "src"
+    }
+  }
 }

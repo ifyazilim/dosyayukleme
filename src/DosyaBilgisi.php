@@ -189,4 +189,20 @@ class DosyaBilgisi extends \SplFileInfo
     {
         return $this->name;
     }
+
+    /**
+     * Dosyanın resim mi değil mi karar verir.
+     *
+     * @return bool
+     */
+    public function isImage()
+    {
+        return in_array($this->mimeType, [
+            'image/gif',
+            'image/jpeg',
+            'image/pjpeg',
+            'image/png',
+            'image/x-png'
+        ]);
+    }
 }
